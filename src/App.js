@@ -1,21 +1,27 @@
 import React, {Component} from 'react';
+import OptionsInput from './components/OptionsInput';
+import GeneratedArea from './components/GeneratedArea';
 
 class App extends Component {
 
-  mineWrapper = () => {
-    return {'width': '500px', 'height': '500px', margin: '0 auto', 'marginTop': '100px', border: '1px solid black'}
+  constructor(props) {
+    super(props);
+    this.state = {
+      area: 10,
+      mines: 20
+    }
   }
-  mineInputs = () => {
-    return {margin: '0 auto', 'width': '500px', 'marginTop': '50px'}
+
+  mineWrapper = () => {
+    return {'width': '600px', 'height': '600px', margin: '0 auto', 'marginTop': '20px', border: '1px solid black'}
   }
   render() {
     return (
       <div>
-        <div style={this.mineInputs()}>
-          <label>Area: </label>
-          <input type="number" />
+        <OptionsInput/>
+        <div style={this.mineWrapper()}>
+          <GeneratedArea area={this.state.area} mines={this.state.mines}/>
         </div>
-        <div style={this.mineWrapper()}></div>
       </div>
     )
   }
