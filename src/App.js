@@ -10,6 +10,13 @@ class App extends Component {
       area: 10,
       mines: 20
     }
+    this.handleGenerateButton = this.handleGenerateButton.bind(this);
+  }
+
+  handleGenerateButton(area, mines) {
+    if(area * area > mines) {
+      this.setState({area: area, mines: mines});
+    }
   }
 
   mineWrapper = () => {
@@ -18,9 +25,14 @@ class App extends Component {
   render() {
     return (
       <div>
-        <OptionsInput/>
+        <OptionsInput
+          handleGenerateButton={this.handleGenerateButton}
+        />
         <div style={this.mineWrapper()}>
-          <GeneratedArea area={this.state.area} mines={this.state.mines}/>
+          <GeneratedArea
+            area={this.state.area}
+            mines={this.state.mines}
+          />
         </div>
       </div>
     )
