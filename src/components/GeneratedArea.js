@@ -8,14 +8,16 @@ export default class GeneratedArea extends Component {
     this.state = {
       gameField: this.generateArray(this.props.area),
       mines: this.props.mines,
-      gameOver: false
+      win: false,
+      lose: false,
+      visibleCount: 0
     }
     this.setVisible = this.setVisible.bind(this);
     this.setFlagged = this.setFlagged.bind(this);
   }
 
   initialize() {
-    this.setState({gameOver: false});
+    this.setState({gameOver: false, visibleCount: 0, win: false, lose: false});
     this.generateMines();
   }
 
@@ -28,19 +30,29 @@ export default class GeneratedArea extends Component {
   }
 
   setVisible(x, y, value, isVisible) {
-    if(this.state.gameOver === true) {
+    if(this.state.lose || this.state.win || isVisible) {
       return;
     }
-    if(isVisible === true) {
-      return;
-    }
-    this.setState({gameField: [...this.state.gameField, ...this.state.gameField[x][y].isVisible = true]});
-    if(value === 'X') {
-      this.setState({gameOver: true});
-      alert('gg');
+    if(value !== 'X') {
+          this.setState({visibleCount: this.state.visibleCount++});
     }
     if(value === '') {
       this.revealEmpty(x, y);
+    } else {
+      this.setState({gameField: [...this.state.gameField, ...this.state.gameField[x][y].isVisible = true]});
+      this.setState({visibleCount: this.state.visibleCount++});
+      this.checkWin();
+    }
+    if(value === 'X') {
+      this.setState({lose: true});
+    }
+  }
+
+  checkWin() {
+    console.log(this.state.visibleCount + ' ' + (this.props.area * this.props.area - this.props.mines));
+    if(this.state.visibleCount >= (this.props.area * this.props.area - this.props.mines) && this.state.gameOver === false) {
+      this.setState({win: true}, () => {
+      });
     }
   }
 
@@ -51,6 +63,7 @@ export default class GeneratedArea extends Component {
       for(let b = j - 1; b < j + 2; b++) {
         if (a >= 0 && b >= 0 && a < length && b < length && array[a][b].isVisible === false) {
           array[a][b].isVisible = true;
+          this.setState({visibleCount: this.state.visibleCount++}, () => this.checkWin());
           if(array[a][b].nearby === '') {
             this.revealEmpty(a, b);
           }
@@ -93,10 +106,8 @@ export default class GeneratedArea extends Component {
       for(let j = 0; j < area; j++) {
         let x = Math.floor((Math.random() * 10) + 1);
         if (x === 3 && mines > 0 && array[i][j].value !== 1) {
-          console.log('placed mine in ' + i + ' ' + j);
           array[i][j].value = 1;
           mines--;
-          console.log(mines);
         } else if (array[i][j].value !== 1) {
           array[i][j].value = 0;
         }
@@ -144,6 +155,8 @@ export default class GeneratedArea extends Component {
   }
 
   render() {
+    const win = 'You won';
+    const lose = 'You lost';
     let area = this.props.area;
     let nodes = [];
     for(let i = 0; i < area; i++) {
@@ -152,7 +165,11 @@ export default class GeneratedArea extends Component {
       }
     }
     return (
+      <div>
+        <div>{this.state.win && win}</div>
+        <div>{this.state.lose && lose}</div>
       <div className={this.wrapperStyle()}>{nodes}</div>
+      </div>
     )
   }
 }
