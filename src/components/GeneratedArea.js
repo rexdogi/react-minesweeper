@@ -11,6 +11,7 @@ export default class GeneratedArea extends Component {
       gameOver: false
     }
     this.setVisible = this.setVisible.bind(this);
+    this.setFlagged = this.setFlagged.bind(this);
   }
 
   initialize() {
@@ -20,6 +21,10 @@ export default class GeneratedArea extends Component {
 
   componentDidMount() {
     this.initialize();
+  }
+
+  setFlagged(x, y) {
+    this.setState({gameField: [...this.state.gameField, ...this.state.gameField[x][y].isFlagged = !this.state.gameField[x][y].isFlagged]});
   }
 
   setVisible(x, y, value, isVisible) {
@@ -74,7 +79,7 @@ export default class GeneratedArea extends Component {
     }
     for(var i = 0; i < rows; i++) {
       for(var j = 0; j < rows; j++) {
-        arr[i][j] = {value: 0, isVisible: false, nearby: ''};
+        arr[i][j] = {value: 0, isVisible: false, nearby: '', isFlagged: false};
       }
     }
     return arr;
@@ -143,7 +148,7 @@ export default class GeneratedArea extends Component {
     let nodes = [];
     for(let i = 0; i < area; i++) {
       for(let j = 0; j < area; j++) {
-        nodes.push(<Node setVisible={this.setVisible} value={this.state.gameField[i][j].nearby} isVisible={this.state.gameField[i][j].isVisible} area={this.props.area} xPos={i} yPos={j}/>);
+        nodes.push(<Node isFlagged={this.state.gameField[i][j].isFlagged} setFlagged={this.setFlagged} setVisible={this.setVisible} value={this.state.gameField[i][j].nearby} isVisible={this.state.gameField[i][j].isVisible} area={this.props.area} xPos={i} yPos={j}/>);
       }
     }
     return (

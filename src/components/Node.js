@@ -6,17 +6,17 @@ export default class Node extends Component {
     super(props);
     this.state = {
       isVisible: this.props.isVisible,
-      flagged: false
+      isFlagged: this.props.isFlagged
     }
   }
 
   componentWillReceiveProps(props) {
-    this.setState({isVisible: props.isVisible});
+    this.setState({isVisible: props.isVisible, isFlagged: props.isFlagged});
   }
 
   getBackgroundColor() {
     if(this.state.isVisible === false) {
-      if(this.state.flagged === true) {
+      if(this.state.isFlagged === true) {
         return '#00FF1E';
       }
       return '#6E7B8B';
@@ -42,19 +42,19 @@ export default class Node extends Component {
   }
 
   handleClick() {
-    if(!this.state.flagged) {
+    if(!this.state.isFlagged) {
       this.props.setVisible(this.props.xPos, this.props.yPos, this.props.value, this.state.isVisible);
     }
   }
 
-  hanldleRightClick(e) {
+  handleRightClick(e) {
     e.preventDefault();
-    this.setState({flagged: !this.state.flagged})
+    this.props.setFlagged(this.props.xPos, this.props.yPos);
   }
 
   render() {
     return (
-      <div onContextMenu={(event) => this.hanldleRightClick(event)} onClick={() => this.handleClick()} style={this.nodeStyle()}>{this.state.isVisible && this.props.value}</div>
+      <div onContextMenu={(event) => this.handleRightClick(event)} onClick={() => this.handleClick()} style={this.nodeStyle()}>{this.state.isVisible && this.props.value}</div>
     )
   }
 }
