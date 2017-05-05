@@ -32,6 +32,7 @@ class App extends Component {
           <GeneratedArea
             area={this.state.area}
             mines={this.state.mines}
+            handleGenerateButton={this.handleGenerateButton}
           />
         </div>
       </div>

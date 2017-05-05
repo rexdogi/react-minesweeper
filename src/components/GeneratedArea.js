@@ -7,12 +7,14 @@ export default class GeneratedArea extends Component {
     super(props);
     this.state = {
       gameField: this.generateArray(this.props.area),
-      mines: this.props.mines
+      mines: this.props.mines,
+      gameOver: false
     }
     this.setVisible = this.setVisible.bind(this);
   }
 
   initialize() {
+    this.setState({gameOver: false});
     this.generateMines();
   }
 
@@ -21,10 +23,17 @@ export default class GeneratedArea extends Component {
   }
 
   setVisible(x, y, value, isVisible) {
+    if(this.state.gameOver === true) {
+      return;
+    }
     if(isVisible === true) {
       return;
     }
-    this.setState({gameField: [...this.state.gameField, ...this.state.gameField[x][y].isVisible = true]})
+    this.setState({gameField: [...this.state.gameField, ...this.state.gameField[x][y].isVisible = true]});
+    if(value === 'X') {
+      this.setState({gameOver: true});
+      alert('gg');
+    }
     if(value === '') {
       this.revealEmpty(x, y);
     }
