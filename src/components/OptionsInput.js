@@ -5,8 +5,8 @@ export default class OptionsInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      area: 5,
-      mines: 10
+      area: 10,
+      mines: 20
     }
   }
 

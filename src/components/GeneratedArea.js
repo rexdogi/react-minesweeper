@@ -12,17 +12,18 @@ export default class GeneratedArea extends Component {
     this.setVisible = this.setVisible.bind(this);
   }
 
-  componentDidMount() {
+  initialize() {
     this.generateMines();
-    let area = this.props.area;
-    for(let i = 0; i < area; i++) {
-      for(let j = 0; j < area; j++) {
-          this.setNodesText(i, j);
-      }
-    }
   }
 
-  setVisible(x, y, value) {
+  componentDidMount() {
+    this.initialize();
+  }
+
+  setVisible(x, y, value, isVisible) {
+    if(isVisible === true) {
+      return;
+    }
     this.setState({gameField: [...this.state.gameField, ...this.state.gameField[x][y].isVisible = true]})
     if(value === '') {
       this.revealEmpty(x, y);
@@ -30,31 +31,26 @@ export default class GeneratedArea extends Component {
   }
 
   revealEmpty(i, j) {
-    console.log(i + ' ' +  j);
     const length = this.props.area;
     let array = this.state.gameField;
     for(let a = i - 1; a < i + 2; a++) {
       for(let b = j - 1; b < j + 2; b++) {
-        if (a >= 0 && b >= 0 && a < length && b < length && array[a][b].isVisible === false && array[a][b].value === 0) {
+        if (a >= 0 && b >= 0 && a < length && b < length && array[a][b].isVisible === false) {
           array[a][b].isVisible = true;
-          if(array[a][b].value !== 0) {
-            return;
-          }
-          if(array[a][b].value === 0) {
+          if(array[a][b].nearby === '') {
             this.revealEmpty(a, b);
           }
         }
       }
     }
     this.setState({gameField: array}, () => {
-          console.log(this.state.gameField);
     });
 
   }
 
   componentWillReceiveProps(props) {
     this.setState({gameField: this.generateArray(props.area), mines: props.mines}, () => {
-        this.generateMines();
+        this.initialize();
     });
   }
 
@@ -83,10 +79,12 @@ export default class GeneratedArea extends Component {
       for(let j = 0; j < area; j++) {
         let x = Math.floor((Math.random() * 10) + 1);
         if (x === 3 && mines > 0 && array[i][j].value !== 1) {
-          array[i][j] = {value: 1, isVisible: false, nearby: ''};
+          console.log('placed mine in ' + i + ' ' + j);
+          array[i][j].value = 1;
           mines--;
+          console.log(mines);
         } else if (array[i][j].value !== 1) {
-          array[i][j] = {value: 0, isVisible: false, nearby: ''};
+          array[i][j].value = 0;
         }
       }
     }
@@ -96,10 +94,17 @@ export default class GeneratedArea extends Component {
         this.generateMines();
       }
     });
+    //let area = this.props.area;
+    for(let i = 0; i < area; i++) {
+      for(let j = 0; j < area; j++) {
+          this.setNodesText(i, j);
+      }
+    }
   }
 
   setNodesText(i, j) {
     if(this.state.gameField[i][j].value === 1) {
+      console.log(true);
       this.setState({gameField: [...this.state.gameField, ...this.state.gameField[i][j].nearby = 'X']})
     } else {
         return this.getNearbyMines(i, j);
@@ -122,7 +127,6 @@ export default class GeneratedArea extends Component {
     } else {
         this.setState({gameField: [...this.state.gameField, ...this.state.gameField[i][j].nearby = nearby]})
     }
-        console.log(this.state.gameField);
   }
 
   render() {

@@ -36,7 +36,7 @@ export default class Node extends Component {
 
   render() {
     return (
-      <div onClick={() => this.props.setVisible(this.props.xPos, this.props.yPos, this.props.value)} style={this.nodeStyle()}>{this.state.isVisible && this.props.value}</div>
+      <div onClick={() => this.props.setVisible(this.props.xPos, this.props.yPos, this.props.value, this.state.isVisible)} style={this.nodeStyle()}>{this.state.isVisible && this.props.value}</div>
     )
   }
 }
